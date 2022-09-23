@@ -1,9 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { MinesweeperInterface } from './minesweeper/interfaces/minesweeper';
-import { MinesweeperEndEvent } from './minesweeper/interfaces/end-events';
-import { SubmitMinesweeperEvents } from './minesweeper/interfaces/start-events';
+import { MinesweeperEndEvent } from '../../minesweeper/interfaces/end-events';
+import { MinesweeperInterface } from '../../minesweeper/interfaces/minesweeper';
+import { SubmitMinesweeperEvents } from '../../minesweeper/interfaces/start-events';
 
 const mockedMinesweeper: MinesweeperInterface = {
   addEndingEventListner: function (event: MinesweeperEndEvent): void {
