@@ -1,11 +1,14 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { MinesweeperInterface } from './minesweeper/minesweeper';
 
 function App() {
+  // TODO
+  const instance: MinesweeperInterface = {} as any;
   return (
     <div className="App">
-      <header className="App-header">
+      <header className="App-header" onClick={instance.clickCell()}>
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
