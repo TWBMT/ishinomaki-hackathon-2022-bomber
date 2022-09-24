@@ -1,12 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "My Extension",
-  "version": "versionString",
+
+  "name": "Chrome Extension TypeScript Starter",
+  "description": "Chrome Extension, TypeScript, Visual Studio Code",
+  "version": "1.0",
+
   "content_scripts": [
     {
       "matches": ["http://itnav.jp/*"],
-      "css": ["my-styles.css"],
-      "js": ["content-script.js"]
+      "js": ["static/js/content-script.js"],
+      "css": ["static/css/content-css.css"]
     }
   ]
 }
