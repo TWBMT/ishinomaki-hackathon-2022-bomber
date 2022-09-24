@@ -14,7 +14,7 @@ const mockedMinesweeper: MinesweeperInterface = {
   }
 }
 
-function NumberColor(val: string) {
+function NumberColor(val: Number) {
   let color: string
   switch (Number(val) % 3) {
     case 0:
@@ -33,15 +33,16 @@ function NumberColor(val: string) {
 }
 
 type cell = {
-  value: string,
-  isOpen: string,
+  isOpened: boolean,
+  isBomb: false,
+  bombCount: 1,
 }
 
 function App() {
   const instance: MinesweeperInterface = mockedMinesweeper;
 
   const [current, setCurrent] = useState(
-      (new Array(12)).fill((new Array(12)).fill({value: 'bomb', isOpen: false}))
+      (new Array(12)).fill((new Array(12)).fill({isOpened: false, isBomb: false, bombCount: 2}))
   )
 
   return (
@@ -50,25 +51,25 @@ function App() {
           {current.map((row, rowIndex) => {
             return (
                 <div className={'row'}>
-                  {row.map(({value, isOpen}: cell, columnIndex: number) => {
+                  {row.map(({isOpened, isBomb, bombCount}: cell, columnIndex: number) => {
                     return (
                         <div
-                            className={isOpen ? 'cell_open' : 'cell_close'}
+                            className={isOpened ? 'cell_open' : 'cell_close'}
                             onClick={() => {
-                              if (!isOpen) {
+                              if (!isOpened) {
                                 setCurrent(
                                     current.map((rowTmp, rowIndexTmp) => {
-                                      return rowTmp.map(({value, isOpen}:cell, columnIndexTmp:number) => {
-                                        return (rowIndex === rowIndexTmp && columnIndex === columnIndexTmp) ? {value: value, isOpen: true} : {value: value, isOpen: isOpen}
+                                      return rowTmp.map((val:cell, columnIndexTmp:number) => {
+                                        return (rowIndex === rowIndexTmp && columnIndex === columnIndexTmp) ? {...val, isOpened: true} : val
                                       })
                                     })
                                 )
                               }
                             }}
-                            style={{color: NumberColor(value)}}
+                            style={{color: NumberColor(bombCount)}}
                         >
                             {/* TODO:環境変数でURL切り替え */}
-                            {isOpen ? (value === 'bomb' ? (<img src={chrome.runtime.getURL('./bomb.svg')} />) : value) : ''}
+                            {isOpened ? (isBomb ? (<img src={chrome.runtime.getURL('./bomb.svg')} />) : bombCount) : ''}
                         </div>
                     )
                   })}
