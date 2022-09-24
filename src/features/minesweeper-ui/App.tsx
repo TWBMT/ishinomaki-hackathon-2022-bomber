@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { MinesweeperEndEvent } from '../../minesweeper/interfaces/end-events';
 import { MinesweeperInterface } from '../../minesweeper/interfaces/minesweeper';
 import { SubmitMinesweeperEvents } from '../../minesweeper/interfaces/start-events';
+import bombImage from './bomb.svg'
 
 const mockedMinesweeper: MinesweeperInterface = {
   addEndingEventListner: function (event: MinesweeperEndEvent): void {
@@ -14,26 +15,68 @@ const mockedMinesweeper: MinesweeperInterface = {
   }
 }
 
+function NumberColor(val: string) {
+  let color: string
+  switch (Number(val) % 3) {
+    case 0:
+      color = '#13965C';
+      break
+    case 1:
+      color = '#064AA5'
+      break
+    case 2:
+      color = '#961B13'
+      break
+    default:
+      color = ''
+  }
+  return color;
+}
+
+type cell = {
+  value: string,
+  isOpen: string,
+}
 
 function App() {
   const instance: MinesweeperInterface = mockedMinesweeper;
+
+  const [current, setCurrent] = useState(
+      (new Array(12)).fill((new Array(12)).fill({value: 'bomb', isOpen: false}))
+  )
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <>
+        <div className={'board'}>
+          {current.map((row, rowIndex) => {
+            return (
+                <div className={'row'}>
+                  {row.map(({value, isOpen}: cell, columnIndex: number) => {
+                    return (
+                        <div
+                            className={isOpen ? 'cell_open' : 'cell_close'}
+                            onClick={() => {
+                              if (!isOpen) {
+                                setCurrent(
+                                    current.map((rowTmp, rowIndexTmp) => {
+                                      return rowTmp.map(({value, isOpen}:cell, columnIndexTmp:number) => {
+                                        return (rowIndex === rowIndexTmp && columnIndex === columnIndexTmp) ? {value: value, isOpen: true} : {value: value, isOpen: isOpen}
+                                      })
+                                    })
+                                )
+                              }
+                            }}
+                            style={{color: NumberColor(value)}}
+                        >
+                          {isOpen ? (value === 'bomb' ? (<img src={bombImage}/>) : value) : ''}
+                        </div>
+                    )
+                  })}
+                </div>
+            )
+          })}
+        </div>
+      </>
   );
 }
 
