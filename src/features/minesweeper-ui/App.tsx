@@ -4,6 +4,7 @@ import './App.css';
 import { MinesweeperEndEvent } from '../../minesweeper/interfaces/end-events';
 import { MinesweeperInterface } from '../../minesweeper/interfaces/minesweeper';
 import { SubmitMinesweeperEvents } from '../../minesweeper/interfaces/start-events';
+import getChromeExtension from '../util/chrome-extension';
 
 const mockedMinesweeper: MinesweeperInterface = {
   addEndingEventListner: function (event: MinesweeperEndEvent): void {
@@ -43,7 +44,8 @@ function App() {
   const [current, setCurrent] = useState(
       (new Array(12)).fill((new Array(12)).fill({value: 'bomb', isOpen: false}))
   )
-
+  const bombUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
+    
   return (
       <>
         <div className={'board'}>
@@ -67,8 +69,7 @@ function App() {
                             }}
                             style={{color: NumberColor(value)}}
                         >
-                            {/* TODO:環境変数でURL切り替え */}
-                            {isOpen ? (value === 'bomb' ? (<img src={chrome.runtime.getURL('./bomb.svg')} />) : value) : ''}
+                            {isOpen ? (value === 'bomb' ? (<img src={bombUrl} />) : value) : ''}
                         </div>
                     )
                   })}
