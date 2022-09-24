@@ -1,19 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { MinesweeperEndEvent } from '../../minesweeper/interfaces/end-events';
-import { MinesweeperInterface } from '../../minesweeper/interfaces/minesweeper';
-import { SubmitMinesweeperEvents } from '../../minesweeper/interfaces/start-events';
 import getChromeExtension from '../util/chrome-extension';
-
-const mockedMinesweeper: MinesweeperInterface = {
-  addEndingEventListner: function (event: MinesweeperEndEvent): void {
-    throw new Error('Function not implemented.');
-  },
-  submitUiEvent: function (event: SubmitMinesweeperEvents): void {
-    throw new Error('Function not implemented.');
-  }
-}
+import { Cell,Minesweeper } from '../../minesweeper/imple/minesweeper';
 
 function NumberColor(val: Number) {
   let color: string
@@ -33,42 +22,38 @@ function NumberColor(val: Number) {
   return color;
 }
 
-type cell = {
-  isOpened: boolean,
-  isBomb: false,
-  bombCount: 1,
-}
+const instance = new Minesweeper();
+instance.init()
 
 function App() {
-  const instance: MinesweeperInterface = mockedMinesweeper;
-
-  const [current, setCurrent] = useState(
-      (new Array(12)).fill((new Array(12)).fill({isOpened: false, isBomb: false, bombCount: 2}))
-  )
+  const [current, setCurrent] = useState<Cell[][]>(instance.currentState.cells)
+  const [gameState, setGameState] = useState<string>('init')
   const bombUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
-    
+
+  const onClickCell = useCallback((x: number, y: number) => {
+    const currentState = instance.click(x, y)
+    const latestCells = currentState.cells
+    setCurrent([...latestCells])
+
+    const latestGameState = currentState.status
+
+    setGameState(latestGameState)
+
+  },[setCurrent, setGameState])
+
   return (
       <>
         <div className={'board'}>
           {current.map((row, rowIndex) => {
             return (
-                <div className={'row'}>
-                  {row.map(({isOpened, isBomb, bombCount}: cell, columnIndex: number) => {
+                <div className={'row'} key={rowIndex}>
+                  {row.map(({isOpened, isBomb, bombCount}: Cell, columnIndex: number) => {
                     return (
                         <div
                             className={isOpened ? 'cell_open' : 'cell_close'}
-                            onClick={() => {
-                              if (!isOpened) {
-                                setCurrent(
-                                    current.map((rowTmp, rowIndexTmp) => {
-                                      return rowTmp.map((val:cell, columnIndexTmp:number) => {
-                                        return (rowIndex === rowIndexTmp && columnIndex === columnIndexTmp) ? {...val, isOpened: true} : val
-                                      })
-                                    })
-                                )
-                              }
-                            }}
+                            onClick={()=>onClickCell(columnIndex, rowIndex)}
                             style={{color: NumberColor(bombCount)}}
+                            key={columnIndex}
                         >
                             {isOpened ? (isBomb ? (<img src={bombUrl} alt="bomb"/>) : bombCount) : ''}
                         </div>
