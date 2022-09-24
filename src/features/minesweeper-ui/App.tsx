@@ -70,7 +70,7 @@ function App() {
                             }}
                             style={{color: NumberColor(bombCount)}}
                         >
-                            {isOpened ? (isBomb ? (<img src={bombUrl} />) : bombCount) : ''}
+                            {isOpened ? (isBomb ? (<img src={bombUrl} alt="bomb"/>) : bombCount) : ''}
                         </div>
                     )
                   })}
