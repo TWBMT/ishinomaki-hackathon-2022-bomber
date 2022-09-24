@@ -58,11 +58,23 @@ class Minesweeper {
     // TODO クリックしたセルの周りが爆弾じゃなかったら開く処理を加える。
 
     // TODO ボムの以外のセルが全てオープンだったらクリアになる。
-    if (false) {
+    if (this.isClear()) {
       this.currentState.status = "clear";
     }
 
     return this.currentState;
+  }
+
+  private isClear() {
+    let isClear = true;
+    this.currentState.cells.forEach((row) => {
+      row.forEach((cell) => {
+        if (!cell.isBomb && !cell.isOpened) {
+          isClear = false;
+        }
+      });
+    });
+    return isClear;
   }
 }
 
@@ -106,7 +118,7 @@ it("クリックしたセルの周りが爆弾じゃなかったら開く処理�
   ]);
 });
 
-it("ボムの以外のセルが全てオープンだったらクリアになる", () => {
+fit("ボムの以外のセルが全てオープンだったらクリアになる", () => {
   const minesweeper = new Minesweeper();
   // 全てのセルをクリック
   minesweeper.click(0, 0);
