@@ -5,8 +5,13 @@ import './index.css';
 
 import reportWebVitals from './reportWebVitals';
 
+const displayWrap = document.createElement('div');
+displayWrap.setAttribute('id', 'minsweeper-wrap');
+const top = document.getElementById('top');
+top && top.appendChild(displayWrap);
+
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('minsweeper-wrap') as HTMLElement
 );
 root.render(
   <React.StrictMode>
