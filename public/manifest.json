@@ -13,6 +13,10 @@
     }
   ],
   "web_accessible_resources": [
-    "src/features/minesweeper/*"
+    {
+      "resources": ["*.svg"],
+      "matches": ["<all_urls>"],
+      "extension_ids": []
+    }
   ]
 }

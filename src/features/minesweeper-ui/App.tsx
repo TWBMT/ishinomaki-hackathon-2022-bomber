@@ -4,7 +4,6 @@ import './App.css';
 import { MinesweeperEndEvent } from '../../minesweeper/interfaces/end-events';
 import { MinesweeperInterface } from '../../minesweeper/interfaces/minesweeper';
 import { SubmitMinesweeperEvents } from '../../minesweeper/interfaces/start-events';
-import bombImage from './bomb.svg'
 
 const mockedMinesweeper: MinesweeperInterface = {
   addEndingEventListner: function (event: MinesweeperEndEvent): void {
@@ -68,7 +67,8 @@ function App() {
                             }}
                             style={{color: NumberColor(value)}}
                         >
-                          {isOpen ? (value === 'bomb' ? (<img src={bombImage}/>) : value) : ''}
+                            {/* TODO:環境変数でURL切り替え */}
+                            {isOpen ? (value === 'bomb' ? (<img src={chrome.runtime.getURL('./bomb.svg')} />) : value) : ''}
                         </div>
                     )
                   })}
