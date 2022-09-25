@@ -1,6 +1,10 @@
-const nameBreak = () : void => {
+const nameBreak = (bombSoundUrl : string) : void => {
     const name = document.getElementsByClassName('pc_kv')[0];
     name.addEventListener('click', function(this : any) {
+        const audioElem : HTMLAudioElement = new Audio();
+        audioElem.src = bombSoundUrl;
+        console.log(audioElem);
+        audioElem.play();
         this.animate(
             [
               {
@@ -18,7 +22,8 @@ const nameBreak = () : void => {
               fill: 'forwards',
               duration: 1000,
             }
-          )
+        );
+        audioElem.pause();
     })
 }
 
