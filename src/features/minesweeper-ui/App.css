@@ -10,7 +10,7 @@
   background: rgba(49,49,49,0.4);
   opacity: 1;
   transition: opacity .5s ease-out;
-  overscroll-behavior: contain;
+  /*overscroll-behavior: contain;*/
   overflow-y: auto;
 }
 

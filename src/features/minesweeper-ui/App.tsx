@@ -34,9 +34,9 @@ function App() {
   const [current, setCurrent] = useState<Cell[][]>(instance.currentState.cells)
   const [gameState, setGameState] = useState<string>('init')
   const [bomber, setBomber] = useState<boolean>(false)
-  const bombUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
-  const bombImgUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
-  const bombSoundUrl: string = getChromeExtension() ? chrome.runtime.getURL('bombSound.mp3') : './bombSound.mp3';
+  const bombUrl: string = './bomb.svg';
+  const bombImgUrl: string = './bomb.svg';
+  const bombSoundUrl: string = './bombSound.mp3';
 
   const onClickCell = useCallback((x: number, y: number) => {
     const currentState = instance.click(x, y)
@@ -72,10 +72,10 @@ function App() {
   },[bombSoundUrl])
 
   const { unityProvider } = useUnityContext({
-    loaderUrl: chrome.runtime.getURL("Build/WebGLtest.loader.js"),
-    dataUrl: chrome.runtime.getURL("Build/WebGLtest.data"),
-    frameworkUrl: chrome.runtime.getURL("Build/WebGLtest.framework.js"),
-    codeUrl: chrome.runtime.getURL("Build/WebGLtest.wasm"),
+    loaderUrl: "Build/WebGLtest.loader.js",
+    dataUrl: "Build/WebGLtest.data",
+    frameworkUrl: "Build/WebGLtest.framework.js",
+    codeUrl: "Build/WebGLtest.wasm",
   });
 
   return (
@@ -93,7 +93,7 @@ function App() {
                             style={{color: NumberColor(bombCount)}}
                             key={columnIndex}
                         >
-                            {isOpened ? (isBomb ? (<img src={bombImgUrl} alt="bomb"/>) : bombCount) : ''}
+                            {isOpened ? (isBomb ? (<img src={'./bomb.svg'} alt="bomb"/>) : bombCount) : ''}
                         </div>
                     )
                   })}

@@ -6,7 +6,7 @@ const getChromeExtension = (): boolean => {
 
 export const getFilePath = (filePath: string) => {
   if (getChromeExtension()) {
-    return chrome.runtime.getURL(filePath);
+    return filePath;
   } else {
     return filePath;
   }
