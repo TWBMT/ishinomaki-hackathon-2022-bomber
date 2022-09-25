@@ -28,6 +28,7 @@ instance.init()
 function App() {
   const [current, setCurrent] = useState<Cell[][]>(instance.currentState.cells)
   const [gameState, setGameState] = useState<string>('init')
+  const [bomber, setBomber] = useState<boolean>(false)
   const bombUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
 
   const onClickCell = useCallback((x: number, y: number) => {
@@ -38,31 +39,51 @@ function App() {
     const latestGameState = currentState.status
 
     setGameState(latestGameState)
-
   },[setCurrent, setGameState])
 
   return (
       <>
-        <div className={'board'}>
-          {current.map((row, rowIndex) => {
-            return (
-                <div className={'row'} key={rowIndex}>
-                  {row.map(({isOpened, isBomb, bombCount}: Cell, columnIndex: number) => {
-                    return (
-                        <div
-                            className={isOpened ? 'cell_open' : 'cell_close'}
-                            onClick={()=>onClickCell(columnIndex, rowIndex)}
-                            style={{color: NumberColor(bombCount)}}
-                            key={columnIndex}
-                        >
-                            {isOpened ? (isBomb ? (<img src={bombUrl} alt="bomb"/>) : bombCount) : ''}
-                        </div>
-                    )
-                  })}
-                </div>
-            )
-          })}
-        </div>
+        <div className={(gameState === 'fail' || bomber) ? 'bomber' : 'bomber_none'} />
+        {gameState === 'clear' ? (
+            <div className={gameState === 'clear' ? 'clear' : 'clear_none'}>
+              <p>CLEAR!!!!</p>
+              <span
+                  onClick={() => {
+                    setBomber(true);
+                    setTimeout(() => {
+                      setBomber(false);
+                      const clearModal = document.querySelector('.clear');
+                      if (clearModal) {
+                        clearModal.id = 'clear';
+                      }
+                    }, 5000)
+                  }}
+              >
+                Click Here
+              </span>
+            </div>
+        ) : (
+            <div className={'board'} id={gameState}>
+              {current.map((row, rowIndex) => {
+                return (
+                    <div className={'row'} key={rowIndex}>
+                      {row.map(({isOpened, isBomb, bombCount}: Cell, columnIndex: number) => {
+                        return (
+                            <div
+                                className={isOpened ? 'cell_open' : 'cell_close'}
+                                onClick={()=>onClickCell(columnIndex, rowIndex)}
+                                style={{color: NumberColor(bombCount)}}
+                                key={columnIndex}
+                            >
+                              {isOpened ? (isBomb ? (<img src={bombUrl} alt="bomb"/>) : (bombCount === 0 ? '' : bombCount)) : ''}
+                            </div>
+                        )
+                      })}
+                    </div>
+                )
+              })}
+            </div>
+        )}
       </>
   );
 }
