@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import { Unity, useUnityContext } from "react-unity-webgl";
 import logo from './logo.svg';
 import './App.css';
 import getChromeExtension from '../util/chrome-extension';
@@ -41,8 +42,29 @@ function App() {
     setGameState(latestGameState)
   },[setCurrent, setGameState])
 
+  //useEffect(() => Bomb)
+
+  const unityContext = new UnityContext({
+    loaderUrl: "Build/WebGLtest.loader.js",
+    dataUrl: "Build/WebGLtest.data",
+    frameworkUrl: "Build/WebGLtest.framework.js",
+    codeUrl: "Build/WebGLtest.wasm",
+  });
+
+  useEffect(function () {
+    unityContext.on("canvas", function (canvas:any) {
+      canvas.width = 100;
+      canvas.height = 50;
+    });
+  }, []);
+
   return (
       <>
+        <div>
+          <Unity unityContext={unityContext}
+                 matchWebGLToCanvasSize={false}
+                 style={{ width: "100px", height: "100px" }} />
+        </div>
         <div className={(gameState === 'fail' || bomber) ? 'bomber' : 'bomber_none'} />
         {gameState === 'clear' ? (
             <div className={gameState === 'clear' ? 'clear' : 'clear_none'}>
