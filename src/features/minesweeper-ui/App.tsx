@@ -1,10 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import getChromeExtension from '../util/chrome-extension';
 import { Cell,Minesweeper } from '../../minesweeper/imple/minesweeper';
 import { initSvgFilter } from '../util/svg-filter';
 import nameBreak from '../util/itonabu';
 import { playMusic } from '../util/audio';
+import { applyBreakEffect } from '../util/animate';
 
 function NumberColor(val: Number) {
   let color: string
@@ -44,10 +45,27 @@ function App() {
 
     playMusic('./bombSound.mp3')
 
+    // 失敗したらエフェクト＆Bomb
+    if (currentState.status === 'fail') {
+      const elm: HTMLElement = document.getElementById('minsweeper-wrap')!
+      applyBreakEffect(elm);
+
+      // 画像タグに
+      document.querySelectorAll('img').forEach((elm) => {
+        elm.addEventListener('click', (v) => {
+          const target = v.target! as HTMLElement
+          applyBreakEffect(target)
+          playMusic('./bombSound.mp3')
+        })
+      })
+    }
   }, [setCurrent, setGameState])
-  // イトナブTOPロゴ画像破壊
-  initSvgFilter()
-  nameBreak(bombSoundUrl)
+
+  useEffect(() => {
+    // イトナブTOPロゴ画像破壊
+    initSvgFilter()
+    nameBreak(bombSoundUrl)
+  },[bombSoundUrl])
 
   return (
       <>
