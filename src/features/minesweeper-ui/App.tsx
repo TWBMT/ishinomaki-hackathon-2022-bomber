@@ -42,28 +42,17 @@ function App() {
     setGameState(latestGameState)
   },[setCurrent, setGameState])
 
-  //useEffect(() => Bomb)
-
-  const unityContext = new UnityContext({
+  const { unityProvider } = useUnityContext({
     loaderUrl: "Build/WebGLtest.loader.js",
     dataUrl: "Build/WebGLtest.data",
     frameworkUrl: "Build/WebGLtest.framework.js",
     codeUrl: "Build/WebGLtest.wasm",
   });
 
-  useEffect(function () {
-    unityContext.on("canvas", function (canvas:any) {
-      canvas.width = 100;
-      canvas.height = 50;
-    });
-  }, []);
-
   return (
       <>
         <div>
-          <Unity unityContext={unityContext}
-                 matchWebGLToCanvasSize={false}
-                 style={{ width: "100px", height: "100px" }} />
+          <Unity unityProvider={unityProvider} style={{ width: '100vw', height: '100vh' }} />
         </div>
         <div className={(gameState === 'fail' || bomber) ? 'bomber' : 'bomber_none'} />
         {gameState === 'clear' ? (
