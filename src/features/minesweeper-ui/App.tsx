@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import { Unity, useUnityContext } from "react-unity-webgl";
+import logo from './logo.svg';
 import './App.css';
 import getChromeExtension from '../util/chrome-extension';
 import { Cell,Minesweeper } from '../../minesweeper/imple/minesweeper';
@@ -31,6 +33,8 @@ instance.init()
 function App() {
   const [current, setCurrent] = useState<Cell[][]>(instance.currentState.cells)
   const [gameState, setGameState] = useState<string>('init')
+  const [bomber, setBomber] = useState<boolean>(false)
+  const bombUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
   const bombImgUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
   const bombSoundUrl: string = getChromeExtension() ? chrome.runtime.getURL('bombSound.mp3') : './bombSound.mp3';
 
@@ -67,8 +71,16 @@ function App() {
     nameBreak(bombSoundUrl)
   },[bombSoundUrl])
 
+  const { unityProvider } = useUnityContext({
+    loaderUrl: "Build/WebGLtest.loader.js",
+    dataUrl: "Build/WebGLtest.data",
+    frameworkUrl: "Build/WebGLtest.framework.js",
+    codeUrl: "Build/WebGLtest.wasm",
+  });
+
   return (
       <>
+        <Unity className={'unity'} unityProvider={unityProvider} style={{ width: '100vw', height: '100vh' }} />
         <div className={'board'}>
           {current.map((row, rowIndex) => {
             return (
