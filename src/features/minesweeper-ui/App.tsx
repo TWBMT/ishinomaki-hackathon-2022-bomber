@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react';
-import logo from './logo.svg';
+import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import getChromeExtension from '../util/chrome-extension';
 import { Cell,Minesweeper } from '../../minesweeper/imple/minesweeper';
 import { initSvgFilter } from '../util/svg-filter';
 import nameBreak from '../util/itonabu';
+import { playMusic } from '../util/audio';
+import { applyBreakEffect } from '../util/animate';
 
 function NumberColor(val: Number) {
   let color: string
@@ -30,7 +31,8 @@ instance.init()
 function App() {
   const [current, setCurrent] = useState<Cell[][]>(instance.currentState.cells)
   const [gameState, setGameState] = useState<string>('init')
-  const bombUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
+  const bombImgUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
+  const bombSoundUrl: string = getChromeExtension() ? chrome.runtime.getURL('bombSound.mp3') : './bombSound.mp3';
 
   const onClickCell = useCallback((x: number, y: number) => {
     const currentState = instance.click(x, y)
@@ -41,11 +43,29 @@ function App() {
 
     setGameState(latestGameState)
 
-  },[setCurrent, setGameState])
-  
-  // イトナブTOPロゴ画像破壊
-  initSvgFilter()
-  nameBreak()
+    playMusic('./bombSound.mp3')
+
+    // 失敗したらエフェクト＆Bomb
+    if (currentState.status === 'fail') {
+      const elm: HTMLElement = document.getElementById('minsweeper-wrap')!
+      applyBreakEffect(elm);
+
+      // 画像タグに
+      document.querySelectorAll('img').forEach((elm) => {
+        elm.addEventListener('click', (v) => {
+          const target = v.target! as HTMLElement
+          applyBreakEffect(target)
+          playMusic('./bombSound.mp3')
+        })
+      })
+    }
+  }, [setCurrent, setGameState])
+
+  useEffect(() => {
+    // イトナブTOPロゴ画像破壊
+    initSvgFilter()
+    nameBreak(bombSoundUrl)
+  },[bombSoundUrl])
 
   return (
       <>
@@ -61,7 +81,7 @@ function App() {
                             style={{color: NumberColor(bombCount)}}
                             key={columnIndex}
                         >
-                            {isOpened ? (isBomb ? (<img src={bombUrl} alt="bomb"/>) : bombCount) : ''}
+                            {isOpened ? (isBomb ? (<img src={bombImgUrl} alt="bomb"/>) : bombCount) : ''}
                         </div>
                     )
                   })}
