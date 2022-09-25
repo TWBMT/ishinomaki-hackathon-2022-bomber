@@ -3,7 +3,6 @@ const nameBreak = (bombSoundUrl : string) : void => {
     name.addEventListener('click', function(this : any) {
         const audioElem : HTMLAudioElement = new Audio();
         audioElem.src = bombSoundUrl;
-        console.log(audioElem);
         audioElem.play();
         this.animate(
             [
@@ -20,10 +19,9 @@ const nameBreak = (bombSoundUrl : string) : void => {
             ],
             {
               fill: 'forwards',
-              duration: 1000,
+              duration: 800,
             }
         );
-        audioElem.pause();
     })
 }
 
