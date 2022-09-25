@@ -14,7 +14,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["*.svg", "Build/*"],
+      "resources": ["*.svg", "*.mp3", "Build/*"],
       "matches": ["<all_urls>"],
       "extension_ids": []
     }

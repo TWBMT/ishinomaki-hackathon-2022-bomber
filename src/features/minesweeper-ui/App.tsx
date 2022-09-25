@@ -4,6 +4,10 @@ import logo from './logo.svg';
 import './App.css';
 import getChromeExtension from '../util/chrome-extension';
 import { Cell,Minesweeper } from '../../minesweeper/imple/minesweeper';
+import { initSvgFilter } from '../util/svg-filter';
+import nameBreak from '../util/itonabu';
+import { playMusic } from '../util/audio';
+import { applyBreakEffect } from '../util/animate';
 
 function NumberColor(val: Number) {
   let color: string
@@ -31,6 +35,8 @@ function App() {
   const [gameState, setGameState] = useState<string>('init')
   const [bomber, setBomber] = useState<boolean>(false)
   const bombUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
+  const bombImgUrl: string = getChromeExtension() ? chrome.runtime.getURL('./bomb.svg') : './bomb.svg';
+  const bombSoundUrl: string = getChromeExtension() ? chrome.runtime.getURL('bombSound.mp3') : './bombSound.mp3';
 
   const onClickCell = useCallback((x: number, y: number) => {
     const currentState = instance.click(x, y)
@@ -40,7 +46,30 @@ function App() {
     const latestGameState = currentState.status
 
     setGameState(latestGameState)
-  },[setCurrent, setGameState])
+
+    playMusic('./bombSound.mp3')
+
+    // 失敗したらエフェクト＆Bomb
+    if (currentState.status === 'fail') {
+      const elm: HTMLElement = document.getElementById('minsweeper-wrap')!
+      applyBreakEffect(elm);
+
+      // 画像タグに
+      document.querySelectorAll('img').forEach((elm) => {
+        elm.addEventListener('click', (v) => {
+          const target = v.target! as HTMLElement
+          applyBreakEffect(target)
+          playMusic('./bombSound.mp3')
+        })
+      })
+    }
+  }, [setCurrent, setGameState])
+
+  useEffect(() => {
+    // イトナブTOPロゴ画像破壊
+    initSvgFilter()
+    nameBreak(bombSoundUrl)
+  },[bombSoundUrl])
 
   const { unityProvider } = useUnityContext({
     loaderUrl: chrome.runtime.getURL("Build/WebGLtest.loader.js"),
@@ -51,50 +80,27 @@ function App() {
 
   return (
       <>
-        <div>
-          <Unity unityProvider={unityProvider} style={{ width: '100vw', height: '100vh' }} />
+        <Unity className={'unity'} unityProvider={unityProvider} style={{ width: '100vw', height: '100vh' }} />
+        <div className={'board'}>
+          {current.map((row, rowIndex) => {
+            return (
+                <div className={'row'} key={rowIndex}>
+                  {row.map(({isOpened, isBomb, bombCount}: Cell, columnIndex: number) => {
+                    return (
+                        <div
+                            className={isOpened ? 'cell_open' : 'cell_close'}
+                            onClick={()=>onClickCell(columnIndex, rowIndex)}
+                            style={{color: NumberColor(bombCount)}}
+                            key={columnIndex}
+                        >
+                            {isOpened ? (isBomb ? (<img src={bombImgUrl} alt="bomb"/>) : bombCount) : ''}
+                        </div>
+                    )
+                  })}
+                </div>
+            )
+          })}
         </div>
-        <div className={(gameState === 'fail' || bomber) ? 'bomber' : 'bomber_none'} />
-        {gameState === 'clear' ? (
-            <div className={gameState === 'clear' ? 'clear' : 'clear_none'}>
-              <p>CLEAR!!!!</p>
-              <span
-                  onClick={() => {
-                    setBomber(true);
-                    setTimeout(() => {
-                      setBomber(false);
-                      const clearModal = document.querySelector('.clear');
-                      if (clearModal) {
-                        clearModal.id = 'clear';
-                      }
-                    }, 5000)
-                  }}
-              >
-                Click Here
-              </span>
-            </div>
-        ) : (
-            <div className={'board'} id={gameState}>
-              {current.map((row, rowIndex) => {
-                return (
-                    <div className={'row'} key={rowIndex}>
-                      {row.map(({isOpened, isBomb, bombCount}: Cell, columnIndex: number) => {
-                        return (
-                            <div
-                                className={isOpened ? 'cell_open' : 'cell_close'}
-                                onClick={()=>onClickCell(columnIndex, rowIndex)}
-                                style={{color: NumberColor(bombCount)}}
-                                key={columnIndex}
-                            >
-                              {isOpened ? (isBomb ? (<img src={bombUrl} alt="bomb"/>) : (bombCount === 0 ? '' : bombCount)) : ''}
-                            </div>
-                        )
-                      })}
-                    </div>
-                )
-              })}
-            </div>
-        )}
       </>
   );
 }
