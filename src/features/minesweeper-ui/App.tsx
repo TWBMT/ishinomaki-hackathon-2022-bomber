@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
-import logo from './logo.svg';
+import { useCallback, useState } from 'react';
 import './App.css';
 import getChromeExtension from '../util/chrome-extension';
 import { Cell,Minesweeper } from '../../minesweeper/imple/minesweeper';
 import { initSvgFilter } from '../util/svg-filter';
 import nameBreak from '../util/itonabu';
+import { playMusic } from '../util/audio';
 
 function NumberColor(val: Number) {
   let color: string
@@ -42,8 +42,9 @@ function App() {
 
     setGameState(latestGameState)
 
-  },[setCurrent, setGameState])
-  
+    playMusic('./bombSound.mp3')
+
+  }, [setCurrent, setGameState])
   // イトナブTOPロゴ画像破壊
   initSvgFilter()
   nameBreak(bombSoundUrl)
