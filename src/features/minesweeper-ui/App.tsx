@@ -43,10 +43,10 @@ function App() {
   },[setCurrent, setGameState])
 
   const { unityProvider } = useUnityContext({
-    loaderUrl: "Build/WebGLtest.loader.js",
-    dataUrl: "Build/WebGLtest.data",
-    frameworkUrl: "Build/WebGLtest.framework.js",
-    codeUrl: "Build/WebGLtest.wasm",
+    loaderUrl: chrome.runtime.getURL("Build/WebGLtest.loader.js"),
+    dataUrl: chrome.runtime.getURL("Build/WebGLtest.data"),
+    frameworkUrl: chrome.runtime.getURL("Build/WebGLtest.framework.js"),
+    codeUrl: chrome.runtime.getURL("Build/WebGLtest.wasm"),
   });
 
   return (
