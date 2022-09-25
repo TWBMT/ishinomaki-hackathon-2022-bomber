@@ -80,7 +80,7 @@ function App() {
 
   return (
       <>
-        <Unity unityProvider={unityProvider} style={{ width: '100vw', height: '100vh' }} />
+        <Unity className={'unity'} unityProvider={unityProvider} style={{ width: '100vw', height: '100vh' }} />
         <div className={'board'}>
           {current.map((row, rowIndex) => {
             return (

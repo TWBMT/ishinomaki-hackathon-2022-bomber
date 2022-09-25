@@ -161,3 +161,8 @@ div#minsweeper-wrap::after {
 .clear_none {
   opacity: 0;
 }
+
+.unity{
+  pointer-events: none;
+  position: fixed;
+}
