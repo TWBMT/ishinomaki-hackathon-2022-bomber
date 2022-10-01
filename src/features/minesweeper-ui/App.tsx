@@ -53,13 +53,18 @@ function App() {
     if (currentState.status === 'fail') {
       const elm: HTMLElement = document.getElementById('minsweeper-wrap')!
       applyBreakEffect(elm);
+      setTimeout(() => {
+        elm.style.display = 'none'
+      },2000)
 
       // 画像タグに
-      document.querySelectorAll('img').forEach((elm) => {
+      document.querySelectorAll('a').forEach((elm) => {
         elm.addEventListener('click', (v) => {
           const target = v.target! as HTMLElement
           applyBreakEffect(target)
           playMusic('./bombSound.mp3')
+          v.preventDefault()
+          return false;
         })
       })
     }
@@ -69,7 +74,7 @@ function App() {
     // イトナブTOPロゴ画像破壊
     initSvgFilter()
     nameBreak(bombSoundUrl)
-  },[bombSoundUrl])
+  },[])
 
   const { unityProvider } = useUnityContext({
     loaderUrl: "Build/WebGLtest.loader.js",

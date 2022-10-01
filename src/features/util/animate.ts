@@ -4,12 +4,12 @@ export const applyBreakEffect = (elm: HTMLElement) => {
       {
         opacity: 1,
         transform: "scale(0.8)",
-        filter: `blur(0) url('#animation-filter')`,
+        filter: `blur(0) url('#animation-filter2')`,
       },
       {
         opacity: 0,
         transform: "scale(4)",
-        filter: `blur(10px) url('#animation-filter')`,
+        filter: `blur(10px) url('#animation-filter2')`,
       },
     ],
     {
